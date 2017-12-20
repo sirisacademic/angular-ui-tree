@@ -736,8 +736,9 @@
             /**
              * Binds the mouse/touch events to enable drag start for this node.
              */
-            //This is outside of bindDragMoveEvents because of the potential for a delay setting.
+            //This is outside of bindDragMoveEvents because of the potential for a delay setting.            
             bindDragStartEvents = function () {
+              return;
               element.bind('touchstart mousedown', function (e) {
                 //Don't call drag delay if no delay was specified.
                 if (scope.dragDelay > 0) {
@@ -760,6 +761,7 @@
              * Binds mouse/touch events that handle moving/dropping this dragged node
              */
             bindDragMoveEvents = function () {
+              return;
               angular.element($document).bind('touchend', dragEndEvent);
               angular.element($document).bind('touchcancel', dragEndEvent);
               angular.element($document).bind('touchmove', dragMoveEvent);
@@ -773,6 +775,7 @@
              * Unbinds mouse/touch events that handle moving/dropping this dragged node.
              */
             unbindDragMoveEvents = function () {
+              return;
               angular.element($document).unbind('touchend', dragEndEvent);
               angular.element($document).unbind('touchcancel', dragEndEvent);
               angular.element($document).unbind('touchmove', dragMoveEvent);
