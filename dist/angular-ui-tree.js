@@ -198,8 +198,8 @@
 
   angular.module('ui.tree')
 
-    .controller('TreeNodesController', ['$scope', '$element',
-      function ($scope, $element) {
+    .controller('TreeNodesController', ['$scope', '$element', '$timeout',
+      function ($scope, $element, $timeout) {
         this.scope = $scope;
 
         $scope.$element = $element;
@@ -243,22 +243,11 @@
           return $scope.$modelValue.length > 0;
         };
 
-        $scope.safeApply = function (fn) {
-          var phase = this.$root.$$phase;
-          if (phase == '$apply' || phase == '$digest') {
-            if (fn && (typeof (fn) === 'function')) {
-              fn();
-            }
-          } else {
-            this.$apply(fn);
-          }
-        };
-
         //Called in apply method of UiTreeHelper.dragInfo.
         $scope.removeNode = function (node) {
           var index = $scope.$modelValue.indexOf(node.$modelValue);
           if (index > -1) {
-            $scope.safeApply(function () {
+            $timeout(function () {
               $scope.$modelValue.splice(index, 1)[0];
             });
             return $scope.$treeScope.$callbacks.removed(node);
@@ -268,7 +257,7 @@
 
         //Called in apply method of UiTreeHelper.dragInfo.
         $scope.insertNode = function (index, nodeData) {
-          $scope.safeApply(function () {
+          $timeout(function () {
             $scope.$modelValue.splice(index, 0, nodeData);
           });
         };
@@ -1350,23 +1339,8 @@
             /**
              * Binds the mouse/touch events to enable drag start for this node.
              */
-            //This is outside of bindDragMoveEvents because of the potential for a delay setting.
+            //This is outside of bindDragMoveEvents because of the potential for a delay setting.            
             bindDragStartEvents = function () {
-              element.bind('touchstart mousedown', function (e) {
-                //Don't call drag delay if no delay was specified.
-                if (scope.dragDelay > 0) {
-                  dragDelay.exec(function () {
-                    dragStartEvent(e);
-                  }, scope.dragDelay);
-                } else {
-                  dragStartEvent(e);
-                }
-              });
-              element.bind('touchend touchcancel mouseup', function () {
-                if (scope.dragDelay > 0) {
-                  dragDelay.cancel();
-                }
-              });
             };
             bindDragStartEvents();
 
@@ -1374,26 +1348,12 @@
              * Binds mouse/touch events that handle moving/dropping this dragged node
              */
             bindDragMoveEvents = function () {
-              angular.element($document).bind('touchend', dragEndEvent);
-              angular.element($document).bind('touchcancel', dragEndEvent);
-              angular.element($document).bind('touchmove', dragMoveEvent);
-              angular.element($document).bind('mouseup', dragEndEvent);
-              angular.element($document).bind('mousemove', dragMoveEvent);
-              angular.element($document).bind('mouseleave', dragCancelEvent);
-              angular.element($document).bind('keydown', keydownHandler);
             };
 
             /**
              * Unbinds mouse/touch events that handle moving/dropping this dragged node.
              */
             unbindDragMoveEvents = function () {
-              angular.element($document).unbind('touchend', dragEndEvent);
-              angular.element($document).unbind('touchcancel', dragEndEvent);
-              angular.element($document).unbind('touchmove', dragMoveEvent);
-              angular.element($document).unbind('mouseup', dragEndEvent);
-              angular.element($document).unbind('mousemove', dragMoveEvent);
-              angular.element($document).unbind('mouseleave', dragCancelEvent);
-              angular.element($document).unbind('keydown', keydownHandler);
             };
           }
         };

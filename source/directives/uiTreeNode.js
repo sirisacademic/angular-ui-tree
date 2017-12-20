@@ -738,22 +738,6 @@
              */
             //This is outside of bindDragMoveEvents because of the potential for a delay setting.            
             bindDragStartEvents = function () {
-              return;
-              element.bind('touchstart mousedown', function (e) {
-                //Don't call drag delay if no delay was specified.
-                if (scope.dragDelay > 0) {
-                  dragDelay.exec(function () {
-                    dragStartEvent(e);
-                  }, scope.dragDelay);
-                } else {
-                  dragStartEvent(e);
-                }
-              });
-              element.bind('touchend touchcancel mouseup', function () {
-                if (scope.dragDelay > 0) {
-                  dragDelay.cancel();
-                }
-              });
             };
             bindDragStartEvents();
 
@@ -761,28 +745,12 @@
              * Binds mouse/touch events that handle moving/dropping this dragged node
              */
             bindDragMoveEvents = function () {
-              return;
-              angular.element($document).bind('touchend', dragEndEvent);
-              angular.element($document).bind('touchcancel', dragEndEvent);
-              angular.element($document).bind('touchmove', dragMoveEvent);
-              angular.element($document).bind('mouseup', dragEndEvent);
-              angular.element($document).bind('mousemove', dragMoveEvent);
-              angular.element($document).bind('mouseleave', dragCancelEvent);
-              angular.element($document).bind('keydown', keydownHandler);
             };
 
             /**
              * Unbinds mouse/touch events that handle moving/dropping this dragged node.
              */
             unbindDragMoveEvents = function () {
-              return;
-              angular.element($document).unbind('touchend', dragEndEvent);
-              angular.element($document).unbind('touchcancel', dragEndEvent);
-              angular.element($document).unbind('touchmove', dragMoveEvent);
-              angular.element($document).unbind('mouseup', dragEndEvent);
-              angular.element($document).unbind('mousemove', dragMoveEvent);
-              angular.element($document).unbind('mouseleave', dragCancelEvent);
-              angular.element($document).unbind('keydown', keydownHandler);
             };
           }
         };
